@@ -1,0 +1,25 @@
+# Task Checklist: AI Portfolio Dashboard & Recruiter Agent
+
+- [x] Component 1: Central Project Files & Setup
+  - [x] Create `portfolio-dashboard` folder structure
+  - [x] Create `README.md` and `CLAUDE.md` for local guidelines
+  - [x] Create `requirements.txt` for backend dependencies
+  - [x] Draft `candidate_profile.md` for Nikhil Teja (bio, experience, skills)
+- [x] Component 2: Backend (FastAPI + Recruiter Agent Engine)
+  - [x] Build `config.py` for API keys and configuration
+  - [x] Build `agent.py` for aggregating project docs and dual-provider adapter logic (Claude & Gemini)
+  - [x] Build `main.py` for routing `/api/chat` and serving static frontend
+- [x] Component 3: Frontend Setup (Vite + React)
+  - [x] Initialize Vite React project in `frontend` folder using `npx`
+  - [x] Create `projects.js` static metadata mapping projects to skills
+  - [x] Write `index.css` for the custom premium Vanilla CSS design system
+- [x] Component 4: Frontend UI Components
+  - [x] Build `Hero.jsx` (bold introduction) and `Timeline.jsx` (experience)
+  - [x] Build `SkillsMatrix.jsx` (interactive grid for highlighting projects by skill)
+  - [x] Build `ProjectCard.jsx` and `ProjectModal.jsx` (modal deep-dives)
+  - [x] Build `RecruiterChat.jsx` (gorgeous chatbot sidebar/floating panel with preset chips)
+  - [x] Update `App.jsx` to assemble the dashboard layout
+- [x] Component 5: Integration, Polishing & Verification
+  - [x] Test FastAPI chat endpoint and agent responses
+  - [x] Build the production assets of React frontend
+  - [x] Verify served page, interactive states, and responsive layout

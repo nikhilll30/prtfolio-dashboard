@@ -1,0 +1,25 @@
+# Environments
+.env
+venv/
+.venv/
+env/
+
+# Python caching
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+
+# Node caching & dependencies
+node_modules/
+.npm
+dist-ssr/
+*.local
+
+# IDEs
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
