@@ -113,26 +113,35 @@ class RecruiterAgent:
         try:
             if self.provider == "anthropic":
                 # Call Anthropic API
-                try:
-                    response = self.client.messages.create(
-                        model="claude-3-5-sonnet-latest",
-                        max_tokens=1000,
-                        temperature=0.3,
-                        system=self.system_prompt,
-                        messages=prompt_history
-                    )
-                    return response.content[0].text
-                except Exception as model_err:
-                    # Fallback to the original 3.5 Sonnet if latest is not supported or not found
-                    logger.warning(f"Failed using claude-3-5-sonnet-latest: {model_err}. Trying fallback model...")
-                    response = self.client.messages.create(
-                        model="claude-3-5-sonnet-20240620",
-                        max_tokens=1000,
-                        temperature=0.3,
-                        system=self.system_prompt,
-                        messages=prompt_history
-                    )
-                    return response.content[0].text
+                # Try models in order of capability/availability in 2026
+                models_to_try = [
+                    "claude-sonnet-4-6",
+                    "claude-sonnet-4-20250514",
+                    "claude-haiku-4-5-20251001",
+                    "claude-3-5-sonnet-latest",
+                    "claude-3-5-sonnet-20240620"
+                ]
+                
+                response = None
+                last_err = None
+                for model in models_to_try:
+                    try:
+                        logger.info(f"Attempting query with Anthropic model: {model}")
+                        response = self.client.messages.create(
+                            model=model,
+                            max_tokens=1000,
+                            temperature=0.3,
+                            system=self.system_prompt,
+                            messages=prompt_history
+                        )
+                        logger.info(f"Successfully queried model: {model}")
+                        return response.content[0].text
+                    except Exception as model_err:
+                        last_err = model_err
+                        logger.warning(f"Model {model} failed: {model_err}")
+                
+                if last_err:
+                    raise last_err
 
             elif self.provider == "gemini":
                 # Call Gemini API
