@@ -123,7 +123,7 @@ class RecruiterAgent:
                 ]
                 
                 response = None
-                last_err = None
+                errors = []
                 for model in models_to_try:
                     try:
                         logger.info(f"Attempting query with Anthropic model: {model}")
@@ -137,11 +137,10 @@ class RecruiterAgent:
                         logger.info(f"Successfully queried model: {model}")
                         return response.content[0].text
                     except Exception as model_err:
-                        last_err = model_err
+                        errors.append(f"{model}: {model_err}")
                         logger.warning(f"Model {model} failed: {model_err}")
                 
-                if last_err:
-                    raise last_err
+                raise Exception("All models failed: " + " | ".join(errors))
 
             elif self.provider == "gemini":
                 # Call Gemini API
