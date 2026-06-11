@@ -113,14 +113,26 @@ class RecruiterAgent:
         try:
             if self.provider == "anthropic":
                 # Call Anthropic API
-                response = self.client.messages.create(
-                    model="claude-3-5-sonnet-20241022",
-                    max_tokens=1000,
-                    temperature=0.3,
-                    system=self.system_prompt,
-                    messages=prompt_history
-                )
-                return response.content[0].text
+                try:
+                    response = self.client.messages.create(
+                        model="claude-3-5-sonnet-latest",
+                        max_tokens=1000,
+                        temperature=0.3,
+                        system=self.system_prompt,
+                        messages=prompt_history
+                    )
+                    return response.content[0].text
+                except Exception as model_err:
+                    # Fallback to the original 3.5 Sonnet if latest is not supported or not found
+                    logger.warning(f"Failed using claude-3-5-sonnet-latest: {model_err}. Trying fallback model...")
+                    response = self.client.messages.create(
+                        model="claude-3-5-sonnet-20240620",
+                        max_tokens=1000,
+                        temperature=0.3,
+                        system=self.system_prompt,
+                        messages=prompt_history
+                    )
+                    return response.content[0].text
 
             elif self.provider == "gemini":
                 # Call Gemini API
