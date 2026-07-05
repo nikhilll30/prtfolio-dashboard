@@ -5,7 +5,6 @@ export default function Timeline() {
     {
       title: "Independent AI Engineer",
       company: "Self-Directed Applied AI Portfolio",
-      period: "Jan 2024 – Present",
       description: "Researched and built state-of-the-art LLM architectures, RAG pipelines, fine-tuned domain BERT models, and custom agentic frameworks. Deployed web apps via Docker and Render.",
       bullets: [
         "Orchestrated parallel sub-agents (web search, custom vector stores) using LangGraph state machines.",
@@ -16,7 +15,6 @@ export default function Timeline() {
     {
       title: "MS in Computer Science",
       company: "Rivier University",
-      period: "2023 – 2025",
       description: "Focused on advanced concepts in machine learning, large language models, agentic workflows, and high-performance distributed systems.",
       bullets: [
         "Research and coursework in Deep Learning, Advanced NLP, and Multi-Agent Orchestrations.",
@@ -65,7 +63,9 @@ export default function Timeline() {
                   <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>{exp.title}</h3>
                   <span style={{ fontSize: '0.9rem', color: 'var(--accent-purple)', fontWeight: 500 }}>{exp.company}</span>
                 </div>
-                <span className="tag" style={{ border: '1px solid rgba(157, 78, 221, 0.3)', color: 'var(--accent-purple)' }}>{exp.period}</span>
+                {exp.period && (
+                  <span className="tag" style={{ border: '1px solid rgba(157, 78, 221, 0.3)', color: 'var(--accent-purple)' }}>{exp.period}</span>
+                )}
               </div>
               
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1rem' }}>{exp.description}</p>
