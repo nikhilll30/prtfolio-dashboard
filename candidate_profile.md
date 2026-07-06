@@ -66,7 +66,6 @@
 ## Experience & Education
 
 ### Independent AI Engineer
-* **Duration:** Jan 2024 – Present
 * **Core Responsibilities:**
   * Researched, developed, and deployed advanced generative AI systems across RAG, Fine-Tuning, SQL Agents, and Multi-Agent Orchestration.
   * Wrote clean, production-grade Python code adhering to strict engineering conventions (FastAPI routers, lazy service setups, multi-stage Dockerfiles).
@@ -74,5 +73,4 @@
 
 ### MS in Computer Science
 * **University:** Rivier University
-* **Duration:** 2023 – 2025
 * **Highlights:** Advanced study and research in large language models, NLP architectures, agentic orchestration, and distributed database systems.
