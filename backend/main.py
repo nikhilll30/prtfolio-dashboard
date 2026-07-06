@@ -67,7 +67,7 @@ async def get_portfolio_info():
         "candidate": {
             "name": "Nikhil Teja",
             "title": "AI Engineer",
-            "location": "Austin, Texas",
+            "location": "Jersey City, New Jersey",
             "email": "bvnikhilteja2001@gmail.com",
             "github": "https://github.com/nikhilll30",
             "huggingface": "https://huggingface.co/nikhilteja30",

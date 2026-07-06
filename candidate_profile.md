@@ -3,7 +3,7 @@
 ## Personal Information
 * **Name:** Nikhil Teja
 * **Title:** AI Engineer
-* **Location:** Austin, Texas (Open to Remote / Relocation)
+* **Location:** Jersey City, New Jersey (Open to Remote / Relocation)
 * **GitHub:** [github.com/nikhilll30](https://github.com/nikhilll30)
 * **HuggingFace:** [huggingface.co/nikhilteja30](https://huggingface.co/nikhilteja30)
 * **Email:** bvnikhilteja2001@gmail.com
