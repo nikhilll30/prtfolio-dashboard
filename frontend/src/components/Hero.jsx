@@ -1,46 +1,50 @@
 import React from 'react';
+import useTypewriter from '../hooks/useTypewriter';
 
 export default function Hero({ onOpenChat }) {
+  const headline = 'NIKHIL TEJA // AI ENGINEER';
+  const { text: typedHeadline, done } = useTypewriter(headline, 45);
+
   return (
-    <header className="hero-section glass-panel animate-fade-in" style={{ padding: '4rem 3rem', marginBottom: '3rem', position: 'relative', overflow: 'hidden' }}>
-      {/* Background visual element */}
-      <div style={{
-        position: 'absolute',
-        top: '-50px',
-        right: '-50px',
-        width: '250px',
-        height: '250px',
-        background: 'radial-gradient(circle, rgba(0, 242, 254, 0.15) 0%, transparent 70%)',
-        pointerEvents: 'none'
-      }} />
-      
-      <div style={{ maxWidth: '800px', zIndex: 1, position: 'relative' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-          <span className="tag tag-accent">Portfolio Hub</span>
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>• Deployed & Containerized AI Solutions</span>
-        </div>
-        
-        <h1 style={{ fontSize: '3.2rem', lineHeight: '1.1', marginBottom: '1.5rem', fontWeight: 800 }}>
-          Hi, I'm <span className="text-gradient">Nikhil Teja</span>
+    <header className="panel animate-fade-in" style={{ marginBottom: '3rem' }}>
+      <div className="panel-header">
+        <span>┌─ ~/nikhil-teja</span>
+        <span style={{ color: 'var(--accent-dim)' }}>portfolio v2.0</span>
+      </div>
+
+      <div style={{ padding: '3rem 2.5rem 3.5rem', maxWidth: '820px' }}>
+        <h1 style={{
+          fontFamily: 'var(--font-mono)',
+          fontSize: 'clamp(1.6rem, 4.5vw, 2.6rem)',
+          fontWeight: 600,
+          letterSpacing: '0.01em',
+          marginBottom: '1.5rem',
+          minHeight: '1.2em',
+          whiteSpace: 'nowrap'
+        }}>
+          {typedHeadline}
+          <span className="cursor-blink">█</span>
         </h1>
-        
-        <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', marginBottom: '2.5rem', lineHeight: '1.7' }}>
-          I design and ship production AI systems built around large language models — turning model capabilities into dependable products. 
-          My work spans multi-agent orchestration with LangGraph, hybrid retrieval pipelines on ChromaDB and BM25 reciprocal rank fusion, 
-          domain-adapted applications such as BiomedBERT-powered NLP tools, and the API, orchestration, and reliability layers that hold it all together. 
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', marginBottom: '1.75rem', opacity: done ? 1 : 0, transition: 'opacity 0.4s ease' }}>
+          <p className="prompt-line">building production LLM systems</p>
+          <p className="prompt-line">4 projects loaded — deployed &amp; containerized</p>
+          <p className="prompt-line">recruiter_agent online</p>
+        </div>
+
+        <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', marginBottom: '2.25rem', lineHeight: '1.7' }}>
+          I design and ship production AI systems built around large language models — turning model capabilities into dependable products.
+          My work spans multi-agent orchestration with LangGraph, hybrid retrieval pipelines on ChromaDB and BM25 reciprocal rank fusion,
+          domain-adapted applications such as BiomedBERT-powered NLP tools, and the API, orchestration, and reliability layers that hold it all together.
           Explore my portfolio below, or chat directly with my interactive AI Recruiter Agent.
         </p>
-        
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
           <button className="btn btn-primary" onClick={onOpenChat}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
-            Grill My AI Recruiter
+            [run_recruiter_agent]
           </button>
-          
-          <a href="#projects" className="btn btn-secondary">
-            View Engineering Projects
+          <a href="#projects" className="btn">
+            [view_projects]
           </a>
         </div>
       </div>

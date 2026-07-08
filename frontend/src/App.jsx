@@ -55,35 +55,18 @@ export default function App() {
         alignItems: 'center',
         marginBottom: '3rem',
         paddingBottom: '1rem',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
+        borderBottom: '1px solid var(--border)'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div style={{
-            width: '32px',
-            height: '32px',
-            borderRadius: '8px',
-            background: 'var(--grad-primary)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 800,
-            fontSize: '1.1rem',
-            color: '#06050c'
-          }}>NT</div>
-          <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, letterSpacing: '-0.02em', fontSize: '1.2rem' }}>
-            Nikhil<span className="text-gradient">Teja</span>
-          </span>
-        </div>
+        <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 500, fontSize: '0.95rem', color: 'var(--text-primary)' }}>
+          <span style={{ color: 'var(--accent-dim)' }}>~/</span>nikhil-teja<span className="cursor-blink">_</span>
+        </span>
 
-        <button 
-          className="btn btn-outline" 
+        <button
+          className="btn"
           onClick={() => setIsChatOpen(!isChatOpen)}
-          style={{ fontSize: '0.85rem', padding: '0.5rem 1.1rem' }}
+          style={{ fontSize: '0.78rem', padding: '0.45rem 0.9rem' }}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '0.25rem' }}>
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-          </svg>
-          {isChatOpen ? 'Close Recruiter Bot' : 'AI Recruiter Bot'}
+          {isChatOpen ? '[close_agent]' : '[recruiter_agent]'}
         </button>
       </nav>
 
@@ -101,8 +84,8 @@ export default function App() {
 
         {/* Projects Grid Section */}
         <section id="projects" style={{ marginBottom: '4rem' }}>
-          <h2 className="section-title">Engineering Projects</h2>
-          
+          <h2 className="section-title"><span className="section-num">02 //</span> PROJECTS</h2>
+
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
@@ -129,15 +112,16 @@ export default function App() {
       <footer style={{
         textAlign: 'center',
         padding: '3rem 0 1rem',
-        borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+        borderTop: '1px solid var(--border)',
         color: 'var(--text-muted)',
-        fontSize: '0.85rem'
+        fontFamily: 'var(--font-mono)',
+        fontSize: '0.78rem'
       }}>
-        <p>© 2026 Nikhil Teja. Built with React, FastAPI, Claude, and Gemini.</p>
+        <p>© 2026 nikhil-teja · built with react + fastapi + claude + gemini</p>
         <p style={{ marginTop: '0.5rem' }}>
-          Explore portfolio projects: 
-          <a href="https://github.com/nikhilll30" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-cyan)', textDecoration: 'none', marginLeft: '0.25rem' }}>GitHub</a> | 
-          <a href="https://huggingface.co/nikhilteja30" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-purple)', textDecoration: 'none', marginLeft: '0.25rem' }}>HuggingFace</a>
+          <a href="https://github.com/nikhilll30" target="_blank" rel="noreferrer" className="mono-link">[github]</a>
+          {' '}
+          <a href="https://huggingface.co/nikhilteja30" target="_blank" rel="noreferrer" className="mono-link">[huggingface]</a>
         </p>
       </footer>
 

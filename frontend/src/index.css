@@ -1,28 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap');
 
 :root {
-  --font-heading: 'Space Grotesk', sans-serif;
-  --font-body: 'Inter', sans-serif;
   --font-mono: 'Fira Code', monospace;
-  
-  /* Minimalist High-Fidelity Hermes Theme (Dark Slate) */
-  --bg-main: #070709;
-  --bg-surface: rgba(16, 16, 22, 0.75);
-  --bg-surface-hover: rgba(24, 24, 33, 0.9);
-  --border-color: rgba(255, 255, 255, 0.05);
-  --border-glow: rgba(255, 90, 0, 0.2);
-  
-  /* Nous Research Hermes Warm Accents */
-  --accent-cyan: #ff5a00;     /* Hermes Vibrant Orange */
-  --accent-purple: #fbbf24;   /* Hermes Amber / Gold */
-  --accent-blue: #a1a1aa;     /* Sleek neutral grey */
-  --text-primary: #f4f4f5;    /* Zinc primary white */
-  --text-secondary: #a1a1aa;  /* Zinc secondary grey */
-  --text-muted: #52525b;      /* Zinc muted grey */
-  
-  --grad-primary: linear-gradient(135deg, #ff5a00 0%, #ff7800 50%, #fbbf24 100%);
-  --grad-dark: linear-gradient(180deg, #09090b 0%, #050506 100%);
-  --grad-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+  --font-body: 'Inter', sans-serif;
+
+  /* Terminal-Minimal Amber Theme */
+  --bg-main: #09090b;
+  --bg-panel: #0e0e11;
+  --bg-panel-raised: #131318;
+  --border: #26262c;
+  --border-hover: #3a3a41;
+  --border-accent: rgba(245, 185, 68, 0.4);
+  --accent: #f5b944;
+  --accent-dim: #8a6d3b;
+  --accent-wash: rgba(245, 185, 68, 0.07);
+  --text-primary: #e8e6e3;
+  --text-secondary: #a3a09a;
+  --text-muted: #6b6b70;
 }
 
 * {
@@ -34,37 +28,15 @@
 body {
   font-family: var(--font-body);
   background-color: var(--bg-main);
-  background-image: var(--grad-dark);
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
-  position: relative;
   line-height: 1.6;
 }
 
-/* Ambient Radial Background Glows - Hermes Theme */
-body::before {
-  content: '';
-  position: absolute;
-  top: -10%;
-  left: 20%;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(255, 90, 0, 0.06) 0%, rgba(0, 0, 0, 0) 70%);
-  z-index: -1;
-  pointer-events: none;
-}
-
-body::after {
-  content: '';
-  position: absolute;
-  bottom: 10%;
-  right: 10%;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(251, 191, 36, 0.04) 0%, rgba(0, 0, 0, 0) 70%);
-  z-index: -1;
-  pointer-events: none;
+::selection {
+  background: rgba(245, 185, 68, 0.25);
+  color: var(--text-primary);
 }
 
 /* Custom Scrollbar */
@@ -72,24 +44,23 @@ body::after {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #070709;
+  background: var(--bg-main);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 4px;
-  border: 2px solid #070709;
+  background: var(--border);
+  border: 2px solid var(--bg-main);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-cyan);
+  background: var(--accent-dim);
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
-/* Layout Utilities */
+/* Layout */
 .app-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -97,27 +68,251 @@ h1, h2, h3, h4, h5, h6 {
   position: relative;
 }
 
-/* Glassmorphism Class - Developer Style (Sharp) */
-.glass-panel {
-  background: var(--bg-surface);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+/* Flat terminal panel */
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  transition: border-color 0.2s ease;
 }
 
-.glass-panel:hover {
-  border-color: rgba(255, 90, 0, 0.25);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+.panel:hover {
+  border-color: var(--border-hover);
 }
 
-/* Gradients text */
-.text-gradient {
-  background: var(--grad-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Terminal window title bar: <div class="panel-header">┌─ label</div> */
+.panel-header {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 0.55rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+
+.panel:hover > .panel-header {
+  color: var(--text-secondary);
+}
+
+/* Section titles: <h2 class="section-title"><span>01 //</span> PROJECTS</h2> */
+.section-title {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.section-title .section-num {
+  color: var(--accent-dim);
+  font-weight: 500;
+}
+
+.section-title::after {
+  content: '';
+  flex-grow: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Terminal prompt lines: <p class="prompt-line">4 projects loaded</p> */
+.prompt-line {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.prompt-line::before {
+  content: '> ';
+  color: var(--accent);
+}
+
+/* Blinking block cursor */
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.cursor-blink {
+  display: inline-block;
+  color: var(--accent);
+  animation: blink 1s step-end infinite;
+  font-weight: 400;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-blink {
+    animation: none;
+  }
+}
+
+/* Buttons — mono, square, bracket-labeled */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.82rem;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  text-decoration: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.btn:hover {
+  border-color: var(--border-accent);
+  color: var(--accent);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--accent-wash);
+  border-color: var(--accent-dim);
+  color: var(--accent);
+}
+
+.btn-primary:hover {
+  background: rgba(245, 185, 68, 0.14);
+  border-color: var(--border-accent);
+}
+
+/* Tags — mono chips */
+.tag {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.tag-accent {
+  border-color: var(--accent-dim);
+  color: var(--accent);
+}
+
+/* Skill pill buttons (SkillsMatrix) */
+.skill-pill {
+  padding: 0.45rem 0.8rem;
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  outline: none;
+  user-select: none;
+}
+
+.skill-pill:hover {
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+}
+
+.skill-pill.selected {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+  color: var(--accent);
+}
+
+/* Suggestion chips (RecruiterChat) */
+.chip {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 0.35rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+  text-align: left;
+}
+
+.chip:hover {
+  border-color: var(--accent-dim);
+  color: var(--accent);
+}
+
+/* Terminal text input (RecruiterChat) */
+.terminal-input {
+  flex-grow: 1;
+  background: var(--bg-main);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 0.7rem 0.9rem;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.terminal-input:focus {
+  border-color: var(--accent-dim);
+}
+
+.terminal-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Icon-only close button */
+.icon-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 2px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.icon-btn:hover {
+  color: var(--accent);
+  border-color: var(--border);
+}
+
+/* Footer / nav links */
+.mono-link {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.mono-link:hover {
+  color: var(--accent);
 }
 
 /* Animations */
@@ -132,110 +327,12 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-@keyframes pulseGlow {
-  0%, 100% {
-    box-shadow: 0 0 10px rgba(255, 90, 0, 0.1);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(255, 90, 0, 0.3);
-  }
-}
-
 .animate-fade-in {
-  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInUp 0.5s ease forwards;
 }
 
-/* Typography styles */
-.section-title {
-  font-size: 2rem;
-  margin-bottom: 2.5rem;
-  text-align: center;
-  position: relative;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.section-title::after {
-  content: '';
-  display: block;
-  width: 40px;
-  height: 3px;
-  background: var(--grad-primary);
-  margin: 0.75rem auto 0;
-  border-radius: 1.5px;
-}
-
-/* Button styles - Sleeker edges */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.7rem 1.4rem;
-  border-radius: 6px;
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  text-decoration: none;
-  border: none;
-}
-
-.btn-primary {
-  background: var(--grad-primary);
-  color: #070709;
-  box-shadow: 0 4px 12px rgba(255, 90, 0, 0.15);
-}
-
-.btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(255, 90, 0, 0.3);
-  filter: brightness(1.05);
-}
-
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-}
-
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--accent-cyan);
-  border: 1px solid rgba(255, 90, 0, 0.3);
-}
-
-.btn-outline:hover {
-  background: rgba(255, 90, 0, 0.04);
-  border-color: var(--accent-cyan);
-  box-shadow: 0 0 10px rgba(255, 90, 0, 0.15);
-  transform: translateY(-1px);
-}
-
-/* Badge tags - Monospace style */
-.tag {
-  display: inline-block;
-  padding: 0.2rem 0.55rem;
-  border-radius: 4px;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-}
-
-.tag-accent {
-  background: rgba(255, 90, 0, 0.05);
-  border-color: rgba(255, 90, 0, 0.15);
-  color: var(--accent-cyan);
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in {
+    animation: none;
+  }
 }

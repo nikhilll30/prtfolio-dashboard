@@ -48,7 +48,7 @@ export default function RecruiterChat({ isOpen, onClose, initialQuery, backendPr
     try {
       // POST to backend API
       // Since FastAPI runs on port 8000 in dev, we use absolute or relative url
-      // Using relative '/api/chat' works in production when served by FastAPI, 
+      // Using relative '/api/chat' works in production when served by FastAPI,
       // in dev we fallback to http://localhost:8000/api/chat
       const baseUrl = window.location.hostname === 'localhost' ? 'http://localhost:8000' : '';
       const response = await fetch(`${baseUrl}/api/chat`, {
@@ -94,99 +94,101 @@ export default function RecruiterChat({ isOpen, onClose, initialQuery, backendPr
       bottom: 0,
       width: '100%',
       maxWidth: '450px',
-      backgroundColor: '#0c0a18',
-      borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
-      boxShadow: '-10px 0 30px rgba(0, 0, 0, 0.5)',
+      backgroundColor: 'var(--bg-panel)',
+      borderLeft: '1px solid var(--border)',
       display: 'flex',
       flexDirection: 'column',
       zIndex: 999,
-      animation: 'fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+      animation: 'fadeInUp 0.3s ease'
     }}>
-      
-      {/* Chat Header */}
+
+      {/* Terminal title bar */}
       <div style={{
-        padding: '1.5rem',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+        padding: '1rem 1.25rem',
+        borderBottom: '1px solid var(--border)',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        background: 'rgba(18, 15, 32, 0.5)'
+        background: 'var(--bg-panel-raised)'
       }}>
         <div>
-          <h3 style={{ fontSize: '1.15rem', color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-cyan)', boxShadow: '0 0 8px var(--accent-cyan)' }} />
-            Recruiter Agent
+          <h3 style={{
+            fontSize: '0.9rem',
+            fontWeight: 600,
+            color: 'var(--text-primary)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <span style={{ width: '7px', height: '7px', background: 'var(--accent)', flexShrink: 0 }} />
+            recruiter_agent — live session
           </h3>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-            Powered by: <strong style={{ color: 'var(--accent-purple)', textTransform: 'capitalize' }}>{backendProvider || 'Mock Engine'}</strong>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+            provider: <span style={{ color: 'var(--accent-dim)', textTransform: 'lowercase' }}>{backendProvider || 'mock_engine'}</span>
           </span>
         </div>
-        <button 
-          onClick={onClose}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: 'var(--text-secondary)',
-            fontSize: '1.1rem',
-            cursor: 'pointer'
-          }}
-        >
-          ✕
-        </button>
+        <button className="icon-btn" onClick={onClose}>[x]</button>
       </div>
 
       {/* Chat Messages area */}
       <div style={{
         flexGrow: 1,
         overflowY: 'auto',
-        padding: '1.5rem',
+        padding: '1.25rem',
         display: 'flex',
         flexDirection: 'column',
-        gap: '1.25rem'
+        gap: '1.1rem'
       }}>
         {messages.map((msg, idx) => (
-          <div 
-            key={idx} 
+          <div
+            key={idx}
             style={{
-              alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-              maxWidth: '85%',
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
+              gap: '0.25rem'
             }}
           >
-            <div 
+            <span style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.68rem',
+              color: msg.role === 'user' ? 'var(--accent)' : 'var(--text-muted)'
+            }}>
+              {msg.role === 'user' ? '> you' : 'recruiter_agent'}
+            </span>
+            <div
               style={{
-                padding: '0.85rem 1.1rem',
-                borderRadius: msg.role === 'user' ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
-                background: msg.role === 'user' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(157, 78, 221, 0.1)',
-                border: msg.role === 'user' ? '1px solid rgba(255, 255, 255, 0.05)' : '1px solid rgba(157, 78, 221, 0.2)',
+                padding: '0.75rem 0.95rem',
+                borderRadius: '2px',
+                background: msg.role === 'user' ? 'var(--accent-wash)' : 'var(--bg-panel-raised)',
+                border: msg.role === 'user' ? '1px solid var(--accent-dim)' : '1px solid var(--border)',
                 color: msg.role === 'user' ? 'var(--text-primary)' : 'var(--text-secondary)',
-                fontSize: '0.92rem',
-                lineHeight: '1.5',
+                fontSize: '0.9rem',
+                lineHeight: '1.55',
                 whiteSpace: 'pre-wrap'
               }}
             >
               {msg.content}
             </div>
-            <span style={{
-              fontSize: '0.65rem',
-              color: 'var(--text-muted)',
-              marginTop: '0.25rem',
-              alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start'
-            }}>
-              {msg.role === 'user' ? 'You' : 'Recruiter Agent'}
-            </span>
           </div>
         ))}
-        
+
         {/* Loading Indicator */}
         {isLoading && (
-          <div style={{ alignSelf: 'flex-start', display: 'flex', gap: '0.5rem', alignItems: 'center', background: 'rgba(157, 78, 221, 0.05)', border: '1px solid rgba(157, 78, 221, 0.1)', borderRadius: '12px', padding: '0.85rem 1.25rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Agent is typing</span>
-            <div style={{ display: 'flex', gap: '3px' }}>
-              <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--accent-purple)', animation: 'pulseGlow 1s infinite' }} />
-              <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--accent-purple)', animation: 'pulseGlow 1s infinite 0.2s' }} />
-              <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--accent-purple)', animation: 'pulseGlow 1s infinite 0.4s' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+              recruiter_agent
+            </span>
+            <div style={{
+              alignSelf: 'flex-start',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.85rem',
+              color: 'var(--text-muted)',
+              border: '1px solid var(--border)',
+              borderRadius: '2px',
+              background: 'var(--bg-panel-raised)',
+              padding: '0.75rem 0.95rem'
+            }}>
+              thinking<span className="cursor-blink">█</span>
             </div>
           </div>
         )}
@@ -196,38 +198,18 @@ export default function RecruiterChat({ isOpen, onClose, initialQuery, backendPr
       {/* Suggestion Chips */}
       {messages.length === 1 && (
         <div style={{
-          padding: '0 1.5rem',
+          padding: '0 1.25rem',
           display: 'flex',
           flexDirection: 'column',
           gap: '0.5rem',
           marginBottom: '1rem'
         }}>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Suggested Questions:</span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+            ## suggested_queries
+          </span>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
             {suggestionChips.map((chip, idx) => (
-              <button 
-                key={idx}
-                onClick={() => handleSendMessage(chip)}
-                style={{
-                  background: 'rgba(255, 255, 255, 0.02)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: '16px',
-                  padding: '0.35rem 0.75rem',
-                  fontSize: '0.75rem',
-                  color: 'var(--accent-cyan)',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  textAlign: 'left'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--accent-cyan)';
-                  e.currentTarget.style.background = 'rgba(0, 242, 254, 0.05)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
-                }}
-              >
+              <button key={idx} className="chip" onClick={() => handleSendMessage(chip)}>
                 {chip}
               </button>
             ))}
@@ -237,49 +219,30 @@ export default function RecruiterChat({ isOpen, onClose, initialQuery, backendPr
 
       {/* Message Input box */}
       <div style={{
-        padding: '1.25rem 1.5rem 1.75rem',
-        borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+        padding: '1rem 1.25rem 1.5rem',
+        borderTop: '1px solid var(--border)',
         display: 'flex',
-        gap: '0.75rem',
-        background: 'rgba(18, 15, 32, 0.5)'
+        alignItems: 'center',
+        gap: '0.6rem',
+        background: 'var(--bg-panel-raised)'
       }}>
-        <input 
-          type="text" 
+        <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent)', fontSize: '0.9rem', userSelect: 'none' }}>$</span>
+        <input
+          type="text"
+          className="terminal-input"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
           disabled={isLoading}
-          placeholder="Ask a technical question about Nikhil..."
-          style={{
-            flexGrow: 1,
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            borderRadius: '8px',
-            padding: '0.75rem 1rem',
-            color: '#fff',
-            fontFamily: 'var(--font-body)',
-            fontSize: '0.9rem',
-            outline: 'none',
-            transition: 'border-color 0.25s ease'
-          }}
-          onFocus={(e) => e.target.style.borderColor = 'var(--accent-cyan)'}
-          onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.08)'}
+          placeholder="ask a technical question..."
         />
-        <button 
+        <button
           onClick={() => handleSendMessage()}
           disabled={isLoading || !inputValue.trim()}
           className="btn btn-primary"
-          style={{
-            padding: '0.75rem 1.25rem',
-            borderRadius: '8px',
-            justifyContent: 'center',
-            minWidth: '50px'
-          }}
+          style={{ padding: '0.7rem 0.9rem' }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="22" y1="2" x2="11" y2="13"></line>
-            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-          </svg>
+          [send]
         </button>
       </div>
 

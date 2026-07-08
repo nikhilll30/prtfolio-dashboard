@@ -25,56 +25,55 @@ export default function Timeline() {
 
   return (
     <section className="timeline-section animate-fade-in" style={{ marginTop: '4rem', marginBottom: '4rem' }}>
-      <h2 className="section-title">Experience & Journey</h2>
-      
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', maxWidth: '800px', margin: '0 auto', position: 'relative' }}>
-        {/* Central line */}
-        <div style={{
-          position: 'absolute',
-          left: '20px',
-          top: '10px',
-          bottom: '10px',
-          width: '2px',
-          background: 'linear-gradient(to bottom, var(--accent-cyan), var(--accent-purple))'
-        }} />
-        
+      <h2 className="section-title"><span className="section-num">03 //</span> EXPERIENCE</h2>
+
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '2rem',
+        maxWidth: '800px',
+        margin: '0 auto',
+        borderLeft: '1px solid var(--border)',
+        paddingLeft: '1.75rem'
+      }}>
         {experiences.map((exp, idx) => (
-          <div key={idx} style={{ display: 'flex', gap: '1.5rem', position: 'relative' }}>
-            {/* Dot indicator */}
-            <div style={{
-              width: '42px',
-              height: '42px',
-              borderRadius: '50%',
-              background: '#06050c',
-              border: '2px solid var(--accent-cyan)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 2,
-              flexShrink: 0
+          <div key={idx} style={{ position: 'relative' }}>
+            {/* Marker on the rule line */}
+            <span style={{
+              position: 'absolute',
+              left: 'calc(-1.75rem - 5px)',
+              top: '0.9rem',
+              fontFamily: 'var(--font-mono)',
+              color: 'var(--accent)',
+              fontSize: '0.75rem',
+              background: 'var(--bg-main)',
+              lineHeight: 1
             }}>
-              <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--grad-primary)' }} />
-            </div>
-            
-            {/* Experience Glass Panel */}
-            <div className="glass-panel" style={{ padding: '1.75rem', flexGrow: 1 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                <div>
-                  <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>{exp.title}</h3>
-                  <span style={{ fontSize: '0.9rem', color: 'var(--accent-purple)', fontWeight: 500 }}>{exp.company}</span>
-                </div>
-                {exp.period && (
-                  <span className="tag" style={{ border: '1px solid rgba(157, 78, 221, 0.3)', color: 'var(--accent-purple)' }}>{exp.period}</span>
-                )}
+              ▸
+            </span>
+
+            <div className="panel">
+              <div className="panel-header">
+                <span>┌─ log_{String(idx + 1).padStart(2, '0')}</span>
               </div>
-              
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1rem' }}>{exp.description}</p>
-              
-              <ul style={{ paddingLeft: '1.25rem', color: 'var(--text-secondary)', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                {exp.bullets.map((bullet, bIdx) => (
-                  <li key={bIdx} style={{ listStyleType: 'square' }}>{bullet}</li>
-                ))}
-              </ul>
+
+              <div style={{ padding: '1.5rem 1.75rem' }}>
+                <div style={{ marginBottom: '0.75rem' }}>
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--text-primary)' }}>{exp.title}</h3>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--accent-dim)' }}>{exp.company}</span>
+                </div>
+
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.92rem', marginBottom: '1rem' }}>{exp.description}</p>
+
+                <ul style={{ listStyle: 'none', color: 'var(--text-secondary)', fontSize: '0.88rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  {exp.bullets.map((bullet, bIdx) => (
+                    <li key={bIdx} style={{ display: 'flex', gap: '0.6rem' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-dim)', flexShrink: 0 }}>▸</span>
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         ))}
