@@ -1,4 +1,5 @@
-import React from 'react';
+import { motion } from 'motion/react';
+import { reveal, viewportOnce } from '../motion';
 
 export default function ProjectCard({ project, onSelect, selectedSkill, onDownloadPdf }) {
   // Check if this card contains the selected skill to apply highlight styling
@@ -6,8 +7,18 @@ export default function ProjectCard({ project, onSelect, selectedSkill, onDownlo
   const isDimmed = selectedSkill && !isHighlighted;
 
   return (
+    <motion.article
+      layout
+      variants={reveal}
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewportOnce}
+      whileHover={{ y: -8, scale: 1.012 }}
+      transition={{ layout: { duration: 0.45, ease: [0.16, 1, 0.3, 1] } }}
+      className="project-card-shell"
+    >
     <div
-      className="panel"
+      className="panel project-card"
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -57,18 +68,20 @@ export default function ProjectCard({ project, onSelect, selectedSkill, onDownlo
 
         {/* Action buttons */}
         <div style={{ display: 'flex', gap: '0.6rem', marginTop: 'auto' }}>
-          <button className="btn btn-primary" onClick={onSelect} style={{ flexGrow: 1 }}>
+          <motion.button whileTap={{ scale: 0.97 }} className="btn btn-primary" onClick={onSelect} style={{ flexGrow: 1 }}>
             [deep_dive]
-          </button>
-          <button
+          </motion.button>
+          <motion.button
+            whileTap={{ scale: 0.94 }}
             className="btn"
             onClick={() => onDownloadPdf(project.id)}
             title="Download Documentation PDF"
           >
             [pdf]
-          </button>
+          </motion.button>
         </div>
       </div>
     </div>
+    </motion.article>
   );
 }

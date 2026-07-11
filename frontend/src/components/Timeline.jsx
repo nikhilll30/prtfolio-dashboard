@@ -1,4 +1,5 @@
-import React from 'react';
+import { motion } from 'motion/react';
+import { reveal, stagger, viewportOnce } from '../motion';
 
 export default function Timeline() {
   const experiences = [
@@ -24,22 +25,30 @@ export default function Timeline() {
   ];
 
   return (
-    <section className="timeline-section animate-fade-in" style={{ marginTop: '4rem', marginBottom: '4rem' }}>
+    <motion.section variants={stagger} initial="hidden" whileInView="visible" viewport={viewportOnce} className="timeline-section" style={{ marginTop: '4rem', marginBottom: '4rem' }}>
       <h2 className="section-title"><span className="section-num">03 //</span> EXPERIENCE</h2>
 
-      <div style={{
+      <motion.div variants={stagger} style={{
         display: 'flex',
         flexDirection: 'column',
         gap: '2rem',
         maxWidth: '800px',
         margin: '0 auto',
-        borderLeft: '1px solid var(--border)',
-        paddingLeft: '1.75rem'
+        paddingLeft: '1.75rem',
+        position: 'relative'
       }}>
+        <motion.span
+          aria-hidden="true"
+          initial={{ scaleY: 0 }}
+          whileInView={{ scaleY: 1 }}
+          viewport={viewportOnce}
+          transition={{ duration: 1.15, ease: [0.16, 1, 0.3, 1] }}
+          className="timeline-rule"
+        />
         {experiences.map((exp, idx) => (
-          <div key={idx} style={{ position: 'relative' }}>
+          <motion.div variants={reveal} key={idx} style={{ position: 'relative' }}>
             {/* Marker on the rule line */}
-            <span style={{
+            <motion.span className="timeline-marker" whileInView={{ scale: [0.7, 1.25, 1] }} viewport={viewportOnce} transition={{ duration: 0.55, delay: idx * 0.16 }} style={{
               position: 'absolute',
               left: 'calc(-1.75rem - 5px)',
               top: '0.9rem',
@@ -50,7 +59,7 @@ export default function Timeline() {
               lineHeight: 1
             }}>
               ▸
-            </span>
+            </motion.span>
 
             <div className="panel">
               <div className="panel-header">
@@ -75,9 +84,9 @@ export default function Timeline() {
                 </ul>
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   );
 }

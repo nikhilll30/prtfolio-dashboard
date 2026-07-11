@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
 import Hero from './components/Hero';
 import SkillsMatrix from './components/SkillsMatrix';
 import ProjectCard from './components/ProjectCard';
@@ -47,9 +48,12 @@ export default function App() {
 
   return (
     <div className="app-container">
+      <div className="ambient-glow ambient-glow-one" aria-hidden="true" />
+      <div className="ambient-glow ambient-glow-two" aria-hidden="true" />
+      <div className="scanline-overlay" aria-hidden="true" />
       
       {/* Top Navbar */}
-      <nav style={{
+      <motion.nav initial={{ opacity: 0, y: -16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }} style={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -68,7 +72,7 @@ export default function App() {
         >
           {isChatOpen ? '[close_agent]' : '[recruiter_agent]'}
         </button>
-      </nav>
+      </motion.nav>
 
       {/* Main Content */}
       <main>
@@ -83,10 +87,17 @@ export default function App() {
         />
 
         {/* Projects Grid Section */}
-        <section id="projects" style={{ marginBottom: '4rem' }}>
+        <motion.section
+          id="projects"
+          initial={{ opacity: 0, y: 34 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.08 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          style={{ marginBottom: '4rem' }}
+        >
           <h2 className="section-title"><span className="section-num">02 //</span> PROJECTS</h2>
 
-          <div style={{
+          <motion.div layout className="projects-grid" style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
             gap: '2.25rem'
@@ -100,8 +111,8 @@ export default function App() {
                 onDownloadPdf={handleDownloadPdf}
               />
             ))}
-          </div>
-        </section>
+          </motion.div>
+        </motion.section>
 
         {/* Experience Timeline Section */}
         <Timeline />

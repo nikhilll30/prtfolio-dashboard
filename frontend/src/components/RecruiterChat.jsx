@@ -1,4 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import { easeOutExpo } from '../motion';
 
 export default function RecruiterChat({ isOpen, onClose, initialQuery, backendProvider }) {
   const [messages, setMessages] = useState([
@@ -10,6 +12,7 @@ export default function RecruiterChat({ isOpen, onClose, initialQuery, backendPr
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  const messagesRef = useRef(messages);
 
   const suggestionChips = [
     "Tell me about Nikhil's LangGraph system.",
@@ -19,30 +22,18 @@ export default function RecruiterChat({ isOpen, onClose, initialQuery, backendPr
     "Is his SQL agent safe against injections?"
   ];
 
-  // Auto-scroll to bottom of chat
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   useEffect(() => {
-    scrollToBottom();
+    messagesRef.current = messages;
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
-  // Handle direct query injection (e.g. from modal)
-  useEffect(() => {
-    if (initialQuery) {
-      handleSendMessage(initialQuery);
-    }
-  }, [initialQuery]);
-
-  const handleSendMessage = async (textToSend) => {
-    const text = textToSend || inputValue;
+  const sendMessage = useCallback(async (text) => {
     if (!text.trim()) return;
 
     // Add user message
-    const newMessages = [...messages, { role: 'user', content: text }];
+    const newMessages = [...messagesRef.current, { role: 'user', content: text }];
+    messagesRef.current = newMessages;
     setMessages(newMessages);
-    if (!textToSend) setInputValue('');
     setIsLoading(true);
 
     try {
@@ -62,32 +53,54 @@ export default function RecruiterChat({ isOpen, onClose, initialQuery, backendPr
       }
 
       const data = await response.json();
-      setMessages([...newMessages, { role: 'assistant', content: data.response }]);
+      const responseMessages = [...newMessages, { role: 'assistant', content: data.response }];
+      messagesRef.current = responseMessages;
+      setMessages(responseMessages);
     } catch (error) {
       console.error("Chat Error:", error);
       // Fallback message
-      setMessages([
+      const fallbackMessages = [
         ...newMessages,
         {
           role: 'assistant',
           content: "Sorry, I had trouble connecting to the backend server. To see dynamic responses, please ensure the FastAPI server is running on port 8000 and that you have configured your ANTHROPIC_API_KEY or GEMINI_API_KEY in the .env file! Feel free to reach out to Nikhil directly at nikhil.teja.ai@gmail.com."
         }
-      ]);
+      ];
+      messagesRef.current = fallbackMessages;
+      setMessages(fallbackMessages);
     } finally {
       setIsLoading(false);
     }
+  }, []);
+
+  // Handle direct query injection (e.g. from modal)
+  useEffect(() => {
+    if (initialQuery) sendMessage(initialQuery);
+  }, [initialQuery, sendMessage]);
+
+  const handleSendMessage = () => {
+    const text = inputValue;
+    if (!text.trim()) return;
+    setInputValue('');
+    sendMessage(text);
   };
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      handleSendMessage();
+        handleSendMessage();
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div style={{
+    <AnimatePresence>
+    {isOpen && (
+    <motion.aside
+      initial={{ opacity: 0, x: 70 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: 70 }}
+      transition={{ duration: 0.48, ease: easeOutExpo }}
+      className="recruiter-drawer"
+      style={{
       position: 'fixed',
       top: 0,
       right: 0,
@@ -99,7 +112,6 @@ export default function RecruiterChat({ isOpen, onClose, initialQuery, backendPr
       display: 'flex',
       flexDirection: 'column',
       zIndex: 999,
-      animation: 'fadeInUp 0.3s ease'
     }}>
 
       {/* Terminal title bar */}
@@ -120,7 +132,7 @@ export default function RecruiterChat({ isOpen, onClose, initialQuery, backendPr
             alignItems: 'center',
             gap: '0.5rem'
           }}>
-            <span style={{ width: '7px', height: '7px', background: 'var(--accent)', flexShrink: 0 }} />
+            <span className="agent-status" style={{ width: '7px', height: '7px', background: 'var(--accent)', flexShrink: 0 }} />
             recruiter_agent — live session
           </h3>
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-muted)' }}>
@@ -140,8 +152,11 @@ export default function RecruiterChat({ isOpen, onClose, initialQuery, backendPr
         gap: '1.1rem'
       }}>
         {messages.map((msg, idx) => (
-          <div
+          <motion.div
             key={idx}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease: easeOutExpo }}
             style={{
               display: 'flex',
               flexDirection: 'column',
@@ -169,7 +184,7 @@ export default function RecruiterChat({ isOpen, onClose, initialQuery, backendPr
             >
               {msg.content}
             </div>
-          </div>
+          </motion.div>
         ))}
 
         {/* Loading Indicator */}
@@ -209,9 +224,9 @@ export default function RecruiterChat({ isOpen, onClose, initialQuery, backendPr
           </span>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
             {suggestionChips.map((chip, idx) => (
-              <button key={idx} className="chip" onClick={() => handleSendMessage(chip)}>
+              <motion.button whileHover={{ x: 3 }} whileTap={{ scale: 0.98 }} key={idx} className="chip" onClick={() => sendMessage(chip)}>
                 {chip}
-              </button>
+              </motion.button>
             ))}
           </div>
         </div>
@@ -246,6 +261,8 @@ export default function RecruiterChat({ isOpen, onClose, initialQuery, backendPr
         </button>
       </div>
 
-    </div>
+    </motion.aside>
+    )}
+    </AnimatePresence>
   );
 }

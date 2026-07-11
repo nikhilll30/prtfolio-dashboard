@@ -1,8 +1,7 @@
-import React from 'react';
+import { AnimatePresence, motion } from 'motion/react';
+import { easeOutExpo } from '../motion';
 
 export default function ProjectModal({ project, onClose, onAskAgent, onDownloadPdf }) {
-  if (!project) return null;
-
   const sectionLabelStyle = {
     fontFamily: 'var(--font-mono)',
     fontSize: '0.78rem',
@@ -14,7 +13,16 @@ export default function ProjectModal({ project, onClose, onAskAgent, onDownloadP
   };
 
   return (
-    <div style={{
+    <AnimatePresence>
+    {project && (
+    <motion.div
+      key={project.id}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.28 }}
+      className="modal-backdrop"
+      style={{
       position: 'fixed',
       top: 0,
       left: 0,
@@ -28,8 +36,12 @@ export default function ProjectModal({ project, onClose, onAskAgent, onDownloadP
       padding: '2rem 1rem'
     }} onClick={onClose}>
 
-      <div
-        className="panel animate-fade-in"
+      <motion.div
+        initial={{ opacity: 0, y: 45, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 28, scale: 0.975 }}
+        transition={{ duration: 0.5, ease: easeOutExpo }}
+        className="panel modal-panel"
         style={{
           width: '100%',
           maxWidth: '750px',
@@ -116,7 +128,9 @@ export default function ProjectModal({ project, onClose, onAskAgent, onDownloadP
           </div>
         </div>
 
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
+    )}
+    </AnimatePresence>
   );
 }
