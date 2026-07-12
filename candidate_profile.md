@@ -2,12 +2,12 @@
 
 ## Personal Information
 * **Name:** Nikhil Teja
-* **Title:** AI Engineer
+* **Title:** Applied AI Engineer
 * **Location:** Jersey City, New Jersey (Open to Remote / Relocation)
 * **GitHub:** [github.com/nikhilll30](https://github.com/nikhilll30)
 * **HuggingFace:** [huggingface.co/nikhilteja30](https://huggingface.co/nikhilteja30)
 * **Email:** bvnikhilteja2001@gmail.com
-* **Summary:** As an AI Engineer, I specialize in building state-of-the-art LLM applications, custom multi-agent architectures, production-grade Retrieval-Augmented Generation (RAG) pipelines, and domain-adapted model fine-tuning. I am passionate about engineering robust, self-correcting agent systems, hybrid search retrievers, and highly optimized APIs that bring generative AI from raw prototype to production-ready containerized microservices.
+* **Summary:** As an Applied AI Engineer, I build inspectable LLM applications, multi-agent architectures, Retrieval-Augmented Generation (RAG) pipelines, and domain-adapted models. My focus is the engineering around the model: orchestration, retrieval, validation, recovery, evaluation, and APIs that turn a prototype into dependable software.
 
 ---
 
@@ -39,8 +39,8 @@
 * **Stack:** ChromaDB, BM25, FastAPI, Streamlit, Claude 3.5 Sonnet, Docker, Docker Compose.
 * **Description:** Engineered a production-grade enterprise RAG pipeline with high-precision citation tracking.
 * **Key Achievements:**
-  * Combined semantic vector search (ChromaDB) with keyword lexical search (BM25) via a custom Reciprocal Rank Fusion (RRF) algorithm to increase retrieval recall by 23%.
-  * Wrote strict citation-enforced prompt guidelines prompting the LLM to output verbatim references and exact page numbers, reducing hallucination to near-zero.
+  * Combined semantic vector search (ChromaDB) with keyword search (BM25) through Reciprocal Rank Fusion (RRF), preserving the strengths of both retrieval signals without comparing incompatible raw scores.
+  * Carried filename and page metadata into the answer context and used explicit citation rules so generated answers can point back to retrieved evidence.
   * Fully containerized both the FastAPI server and Streamlit frontend using a multi-stage Docker Compose setup.
 
 ### 3. SQL Insight Agent (`sql-insight-agent/`)
@@ -48,9 +48,9 @@
 * **Stack:** LangChain, SQLite, Claude 3.5, FastAPI, Streamlit, Render.
 * **Description:** Created an agentic SQL query assistant enabling natural-language querying of relational databases (Chinook SQLite database).
 * **Key Achievements:**
-  * Built a self-correcting prompt loop that intercepts syntax, schema, or execution errors, feeds them back to the LLM, and automatically retries the query (up to 3 times), resulting in a 95% execution success rate on complex queries.
+  * Built a self-correcting loop that intercepts syntax, schema, or execution errors and feeds structured feedback back to the agent for another attempt.
   * Implemented schema-reflection safety blocks to prevent prompt injection and destructive queries (like `DROP TABLE` or `DELETE`).
-  * Deployed the API on Render with lazy database loading to ensure sub-second initial load times.
+  * Deployed the API on Render with startup-time agent initialization and a separate Streamlit client.
 
 ### 4. PubMedQA Fine-Tuning (`pubmedqa-finetune/`)
 * **Role:** NLP Engineer
@@ -58,7 +58,7 @@
 * **Description:** Fine-tuned `microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract` on the expert-labeled PubMedQA dataset for biomedical question answering.
 * **Key Achievements:**
   * Domain-adapted BiomedBERT (pre-trained on 21M PubMed abstracts) with a custom 3-class classification linear head (yes/no/maybe answers).
-  * Designed custom training loops addressing severe label imbalance (only 15% 'maybe' class) using weighted cross-entropy loss.
+  * Addressed severe label imbalance (only 15% 'maybe' class) with weighted cross-entropy loss, improving 'maybe' F1 from 0.00 to 0.37 and macro F1 from 0.36 to 0.51.
   * Deployed the fine-tuned model to HuggingFace Hub (`nikhilteja30/pubmedqa-bert`) and created an interactive Streamlit inference client.
 
 ---

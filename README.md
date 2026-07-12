@@ -1,123 +1,75 @@
-# AI Portfolio Dashboard & Recruiter Agent
+# Nikhil Teja — Applied AI Portfolio
 
-A premium, interactive single-page portfolio hub that aggregates all four AI projects (`pubmedqa-finetune`, `rag-doc-qa`, `sql-insight-agent`, and `multi-agent-researcher`) into a stunning dark-mode dashboard. It features an **Interactive Skills Matrix** linking skills to projects, and embeds an LLM-powered **Recruiter Chatbot** capable of answering deep technical questions about candidate skills, experience, and architectural choices.
+An evidence-first portfolio for four applied AI systems. The React interface presents the work as an interactive capability network, then opens into shareable case studies with deterministic architecture walkthroughs, engineering tradeoffs, explicit limitations, and source links.
 
----
+The FastAPI backend serves the production frontend, project documentation PDFs, and a recruiter-facing knowledge interface grounded in the bundled candidate and project documentation.
 
-## Key Features
+## Experience
 
-1. **Interactive Skills Matrix:** A dynamic layout grouping core capabilities (BERT Fine-Tuning, Hybrid RAG, Multi-Agent LangGraph, FastAPI, Docker, and deployment). Clicking any skill visually filters and highlights projects that implement it.
-2. **Project Showcase Modals:** Rich modals for each project displaying their specific architectures, engineering challenges solved, and key concepts demonstrated.
-3. **AI Recruiter Chatbot:** A responsive chat assistant grounded in the candidate's profile, resume, and markdown project documentation. The agent is powered by a **Configurable Dual-Provider** engine supporting both Anthropic Claude and Google Gemini via `.env` API keys.
-4. **Preset Recruiter Suggestion Chips:** Clickable quick-ask bubbles to guide recruiter interaction (e.g., *"What is Nikhil's experience with LangGraph?"*, *"Tell me about the PubMedQA fine-tuning results"*, etc.).
-5. **Resume & Career Timeline:** An interactive chronological pathway showcasing work experience, education, and technical certifications.
+- **Living system map:** Trace orchestration, retrieval, recovery, and evaluation across the portfolio without hiding core content behind the visualization.
+- **Shareable case studies:** Clean `/work/:project-id` routes for the multi-agent researcher, hybrid RAG engine, SQL insight agent, and PubMedQA model.
+- **Interactive architecture simulations:** Step through deterministic request flows based on the documented implementation; simulations are clearly distinguished from live model output.
+- **Evidence ledger:** Metrics and system facts require a source link. Unsupported legacy claims are intentionally omitted.
+- **Grounded portfolio agent:** Optional project context and backend-approved evidence links accompany answers. The site remains fully useful when no model provider is configured.
+- **Accessible motion:** Keyboard and touch support, visible focus, semantic controls, responsive linear mobile layouts, and reduced-motion behavior.
 
----
+## Stack
 
-## Tech Stack
+- **Frontend:** React 19, Vite, Motion, React Router, Canvas 2D, and custom CSS.
+- **Backend:** FastAPI, Pydantic, Anthropic or Google GenAI, with a local evidence fallback.
+- **Content:** Bundled project Markdown and PDF documentation plus the published Hugging Face model card.
 
-* **Backend:** FastAPI, Asynchronous Python, Uvicorn, Pydantic, Anthropic SDK / Google GenAI SDK.
-* **Frontend:** Vite, React, Vanilla CSS (Glassmorphism, Vibrant HSL gradients, custom keyframe micro-animations).
+## Local development
 
----
+Create and configure the Python environment from the project root:
 
-## Getting Started
-
-### 1. Environment Setup
-Create a `.env` file at the root of `portfolio-dashboard/` containing your API keys:
-```env
-# Add either or both:
-ANTHROPIC_API_KEY=your-anthropic-api-key
-GEMINI_API_KEY=your-gemini-api-key
-```
-
-### 2. Run Backend
-Ensure you have Python 3.9+ installed:
 ```bash
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+venv\Scripts\activate
 pip install -r requirements.txt
+```
+
+Add `ANTHROPIC_API_KEY` and/or `GEMINI_API_KEY` to `.env` when live recruiter-agent answers are needed. Without either key, the backend uses its documented local fallback.
+
+Start the API:
+
+```bash
 uvicorn backend.main:app --reload --port 8000
 ```
 
-### 3. Run Frontend
-Ensure you have Node.js 18+ installed:
+Install and start the frontend in another terminal:
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Open [http://localhost:5173](http://localhost:5173) in your browser.
 
----
+## Validation
 
-## 🚀 How to Add New Projects in the Future
+```bash
+cd frontend
+npm run lint
+npm run test
+npm run build
 
-The portfolio dashboard is designed to be highly modular and extensible. If you build a new AI/NLP project in the future and want to add it to your live portfolio website, follow these **3 simple steps**:
-
-### Step 1: Add Frontend Project Metadata
-Open **`frontend/src/data/projects.js`** and add a new project entry to the `projectsData` array:
-
-```javascript
-{
-  id: "my-new-ai-project",
-  title: "My New AI Project",
-  subtitle: "Brief description of the core capability",
-  metrics: [
-    { label: "Performance", value: "98% Accuracy" }
-  ],
-  techStack: ["React", "FastAPI", "Gemini 2.5"],
-  description: "A summary of what the project accomplishes...",
-  achievements: [
-    "Implemented core LLM orchestration.",
-    "Containerized services for deployment."
-  ],
-  concepts: ["Generative AI", "LLM APIs"],
-  skills: ["FastAPI REST APIs", "Prompt Engineering & Structured Outputs"], // Maps to skills matrix
-  demoUrl: "http://localhost:8000",
-  githubUrl: "https://github.com/your-username/your-repo"
-}
+cd ..
+venv\Scripts\python.exe -m pytest backend\test_main.py -q
 ```
 
-> [!TIP]
-> The **Interactive Skills Matrix** dynamically parses this file. The moment you save the metadata, the new project will automatically display and highlight itself whenever recruiters click on matching skills!
+## Production
 
-### Step 2: Register in the Backend Config
-Open **`backend/config.py`** and add your project directory to the `PROJECTS` dictionary at the bottom:
+The current deployment remains a single FastAPI service. Build the frontend before starting the server:
 
-```python
-PROJECTS = {
-    "pubmedqa-finetune": get_project_paths("pubmedqa-finetune"),
-    "rag-doc-qa": get_project_paths("rag-doc-qa"),
-    "sql-insight-agent": get_project_paths("sql-insight-agent"),
-    "multi-agent-researcher": get_project_paths("multi-agent-researcher"),
-    
-    # ➔ Add your new project folder name here:
-    "my-new-ai-project": get_project_paths("my-new-ai-project")
-}
+```bash
+cd frontend
+npm run build
+cd ..
+uvicorn backend.main:app --port 8000
 ```
 
-> [!TIP]
-> This automatically registers the project backend. The FastAPI server will dynamically map its new PDF downloads endpoint, and the **Recruiter Agent chatbot** will ingest the project's README/documentation into its system context on startup!
+FastAPI serves real static assets directly and falls back to the React application for clean case-study routes. Unknown `/api/*` paths remain JSON 404 responses.
 
-### Step 3: Bundle, Rebuild & Push
-If deploying as a standalone `portfolio-dashboard` repository, run these commands in your terminal to package and push your changes:
+## Adding another project
 
-1. **Bundle Sibling Docs:** Run the aggregation script to automatically copy the new project's README, docs, and PDFs:
-   ```bash
-   python copy_contexts.py
-   ```
-2. **Rebuild the Frontend UI:** Compile the React bundle so the FastAPI backend serves the updated static assets:
-   ```bash
-   cd frontend
-   npm run build
-   cd ..
-   ```
-3. **Commit and Push to GitHub:**
-   ```bash
-   git add .
-   git commit -m "feat: added new project to portfolio"
-   git push origin main
-   ```
-
-Render will automatically detect the new commit, re-deploy your web service, and your live website will be updated instantly!
+Add one structured project record in `frontend/src/data/projects.js`, including architecture nodes, walkthrough stages, decisions, limitations, and proof entries. Every proof entry must include a source label and URL. Register bundled documentation in `backend/config.py` only when the project has downloadable docs or recruiter-agent source material.

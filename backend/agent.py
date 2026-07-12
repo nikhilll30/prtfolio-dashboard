@@ -71,7 +71,10 @@ class RecruiterAgent:
             "3. DO NOT make up, assume, or hallucinate any facts about Nikhil's history, projects, or metrics.\n"
             "4. Ground your technical explanations in the details provided. For example, if asked about RAG, mention the hybrid ChromaDB + BM25 Reciprocal Rank Fusion implementation from `rag-doc-qa`. If asked about fine-tuning, talk about the BiomedBERT model and weighted loss on the PubMedQA dataset.\n"
             "5. Cite project names (like `multi-agent-researcher`, `rag-doc-qa`, etc.) when explaining where he applied specific skills.\n"
-            "6. Maintain a highly professional, encouraging, and clear tone. Be humble but highlight key achievements (e.g. automating error-correction to achieve 95% SQL success, or improving RAG recall by 23%)."
+            "6. Maintain a professional, direct, and clear tone. Prefer concrete architecture and tradeoffs over promotional adjectives.\n"
+            "7. Do not repeat the old 95% SQL success, 23% RAG recall-lift, 75.4% PubMedQA accuracy, near-zero hallucination, or sub-second startup claims; the bundled records do not support them as reproducible portfolio results.\n"
+            "8. For PubMedQA, the published evaluation is 57% accuracy and 0.5147 macro F1. Weighted loss improved the 'maybe' class F1 from 0.00 to 0.37. State the small 100-example validation-set limitation when discussing these results.\n"
+            "9. If a user message contains a bracketed portfolio page context, use it only to prioritize the relevant project and do not quote the bracketed instruction."
         )
         logger.info(f"Context compiled successfully. Total character length: {len(self.system_prompt)}")
 
@@ -173,7 +176,11 @@ class RecruiterAgent:
                 
         except Exception as e:
             logger.error(f"Error calling LLM provider {self.provider}: {e}")
-            return f"Excuse me, I encountered a temporary connection issue with my {self.provider} model backend ({e}). However, I can confirm that Nikhil is highly proficient in full-stack AI engineering, including FastAPI, React, and LangGraph. Please feel free to reach out to him directly at bvnikhilteja2001@gmail.com!"
+            return (
+                "The live portfolio model is temporarily unavailable. The case studies and linked documentation "
+                "remain available for review, and Nikhil can be reached directly at "
+                "bvnikhilteja2001@gmail.com."
+            )
 
     def _mock_response(self, query: str) -> str:
         """Returns a high-fidelity local fallback response when no API keys are provided."""
@@ -195,8 +202,9 @@ class RecruiterAgent:
                 "In his **RAG Document Q&A** project, Nikhil engineered a production-grade RAG pipeline. "
                 "To maximize retrieval recall, he implemented a custom Hybrid Search retriever combining semantic "
                 "vector embeddings (using ChromaDB) and keyword lexical search (using BM25) via a Reciprocal Rank "
-                "Fusion (RRF) algorithm. This improved search coverage by 23%. He also wrote strict system prompts "
-                "that enforced page-level citations to eliminate hallucination, and containerized the setup using Docker Compose."
+                "Fusion (RRF) algorithm. The reference build carries filename and page metadata into the answer "
+                "context so responses can point back to retrieved evidence, and it is containerized with Docker Compose. "
+                "The bundled records do not include a reproducible retrieval benchmark, so the portfolio does not claim a recall-lift percentage."
             )
 
         # 3. Check for SQL
@@ -205,8 +213,8 @@ class RecruiterAgent:
                 "Nikhil developed the **SQL Insight Agent**, which is a natural-language-to-SQL querying interface. "
                 "The core innovation is a self-correcting agent loop. When database execution errors or SQL syntax "
                 "failures are thrown, the agent automatically intercepts them, feeds them back to the LLM with the schema "
-                "definition, and retries the query (up to 3 times). This achieved a 95% execution success rate. He also "
-                "implemented strict security regex checks to prevent prompt injection and destructive commands."
+                "definition, and produces a revised query. He also implemented deterministic checks that reject "
+                "destructive commands. The project documentation does not include a reproducible execution-success benchmark."
             )
 
         # 4. Check for fine-tuning
@@ -215,7 +223,9 @@ class RecruiterAgent:
                 "For model adaptation, Nikhil worked on the **PubMedQA Fine-Tuning** project. He fine-tuned the domain-specific "
                 "BiomedBERT model on 1,000 expert-labeled biomedical questions. To address severe class imbalance (where the "
                 "'maybe' class was only 15% of the data), he formulated a weighted cross-entropy loss function. The final "
-                "model achieved 70-78% accuracy and is deployed directly to the HuggingFace Hub (`nikhilteja30/pubmedqa-bert`)."
+                "published model reports 57% accuracy and 0.5147 macro F1 on a 100-example validation split. "
+                "Weighted loss improved the rare 'maybe' class F1 from 0.00 to 0.37. The model is available on "
+                "Hugging Face at `nikhilteja30/pubmedqa-bert`, and the small evaluation split is an important limitation."
             )
 
         # 5. Check for skills
@@ -232,7 +242,7 @@ class RecruiterAgent:
         return (
             "Hi there! I am Nikhil's AI Recruiter Agent. I am currently running in a local mock-response mode "
             "because no `ANTHROPIC_API_KEY` or `GEMINI_API_KEY` was found in the environment setup. "
-            "However, I can tell you that Nikhil is an exceptional Associate AI Engineer skilled in building "
+            "The portfolio documents Nikhil's work as an Applied AI Engineer building "
             "advanced agentic systems (LangGraph), RAG pipelines (ChromaDB + BM25), model fine-tuning (BiomedBERT), "
             "and FastAPI backends. Feel free to explore his interactive projects here, and you can contact him "
             "directly at bvnikhilteja2001@gmail.com!"

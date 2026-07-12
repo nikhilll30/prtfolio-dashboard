@@ -5,8 +5,8 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
-from typing import List
+from pydantic import BaseModel, Field
+from typing import List, Literal, Optional
 
 from backend import config
 from backend.agent import RecruiterAgent
@@ -38,13 +38,111 @@ except Exception as e:
     agent = None
 
 class Message(BaseModel):
-    role: str
-    content: str
+    role: Literal["user", "assistant"]
+    content: str = Field(min_length=1, max_length=4000)
+
+class ChatContext(BaseModel):
+    project_id: Optional[str] = None
+    surface: Literal["home", "case-study"] = "home"
 
 class ChatRequest(BaseModel):
-    messages: List[Message]
+    messages: List[Message] = Field(min_length=1, max_length=20)
+    context: Optional[ChatContext] = None
 
-@app.post("/api/chat")
+class EvidenceItem(BaseModel):
+    label: str
+    href: str
+    kind: str
+
+class ChatResponse(BaseModel):
+    response: str
+    provider: str
+    evidence: List[EvidenceItem]
+
+PROJECT_EVIDENCE = {
+    "multi-agent-researcher": [
+        EvidenceItem(
+            label="Multi-Agent Researcher case study",
+            href="/work/multi-agent-researcher",
+            kind="case-study",
+        ),
+        EvidenceItem(
+            label="Architecture documentation",
+            href="/api/download-pdf/multi-agent-researcher",
+            kind="documentation",
+        ),
+    ],
+    "rag-doc-qa": [
+        EvidenceItem(
+            label="RAG Document Q&A case study",
+            href="/work/rag-doc-qa",
+            kind="case-study",
+        ),
+        EvidenceItem(
+            label="Retrieval documentation",
+            href="/api/download-pdf/rag-doc-qa",
+            kind="documentation",
+        ),
+    ],
+    "sql-insight-agent": [
+        EvidenceItem(
+            label="SQL Insight Agent case study",
+            href="/work/sql-insight-agent",
+            kind="case-study",
+        ),
+        EvidenceItem(
+            label="Live API documentation",
+            href="https://sql-insight-agent.onrender.com/docs",
+            kind="live",
+        ),
+    ],
+    "pubmedqa-finetune": [
+        EvidenceItem(
+            label="PubMedQA case study",
+            href="/work/pubmedqa-finetune",
+            kind="case-study",
+        ),
+        EvidenceItem(
+            label="Published Hugging Face model card",
+            href="https://huggingface.co/nikhilteja30/pubmedqa-bert",
+            kind="model-card",
+        ),
+    ],
+}
+
+PROJECT_KEYWORDS = {
+    "multi-agent-researcher": ("multi-agent", "multi agent", "langgraph", "a2a", "mcp", "researcher"),
+    "rag-doc-qa": ("rag", "retrieval", "bm25", "rrf", "chromadb", "citation"),
+    "sql-insight-agent": ("sql", "database", "sqlite", "schema", "query"),
+    "pubmedqa-finetune": ("pubmed", "biomed", "bert", "fine-tun", "macro f1", "weighted loss"),
+}
+
+def _evidence_for_request(request: ChatRequest) -> List[EvidenceItem]:
+    """Returns only pre-approved evidence links; model output never controls URLs."""
+    project_ids = []
+    if request.context and request.context.project_id in PROJECT_EVIDENCE:
+        project_ids.append(request.context.project_id)
+
+    query = request.messages[-1].content.lower() if request.messages else ""
+    for project_id, keywords in PROJECT_KEYWORDS.items():
+        if project_id not in project_ids and any(keyword in query for keyword in keywords):
+            project_ids.append(project_id)
+
+    if not project_ids:
+        return [
+            EvidenceItem(
+                label="Explore all case studies",
+                href="/#work",
+                kind="portfolio",
+            )
+        ]
+
+    evidence = []
+    for project_id in project_ids[:2]:
+        evidence.extend(PROJECT_EVIDENCE[project_id])
+    return evidence[:3]
+
+@app.post("/api/chat", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
     """Chat endpoint to communicate with the Recruiter Agent."""
     if not agent:
@@ -55,10 +153,19 @@ async def chat_endpoint(request: ChatRequest):
     
     # Format messages for the agent
     formatted_messages = [{"role": msg.role, "content": msg.content} for msg in request.messages]
+    if request.context and request.context.project_id in config.PROJECTS and formatted_messages:
+        formatted_messages[-1]["content"] += (
+            f"\n\n[Portfolio page context: {request.context.project_id}. "
+            "Use it only to prioritize relevant documented evidence.]"
+        )
     
     # Generate and return response
     response_text = await agent.get_response(formatted_messages)
-    return {"response": response_text, "provider": agent.provider}
+    return ChatResponse(
+        response=response_text,
+        provider=agent.provider,
+        evidence=_evidence_for_request(request),
+    )
 
 @app.get("/api/info")
 async def get_portfolio_info():
@@ -66,7 +173,7 @@ async def get_portfolio_info():
     return {
         "candidate": {
             "name": "Nikhil Teja",
-            "title": "AI Engineer",
+            "title": "Applied AI Engineer",
             "location": "Jersey City, New Jersey",
             "email": "bvnikhilteja2001@gmail.com",
             "github": "https://github.com/nikhilll30",
@@ -143,7 +250,23 @@ DIST_DIR = config.PROJECT_ROOT / "frontend" / "dist"
 
 if DIST_DIR.exists() and DIST_DIR.is_dir():
     logger.info(f"Serving compiled production frontend from {DIST_DIR}")
-    app.mount("/", StaticFiles(directory=str(DIST_DIR), html=True), name="frontend")
+    assets_dir = DIST_DIR / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_spa(full_path: str):
+        """Serves real public files and falls back to React for clean client routes."""
+        if full_path.startswith("api/"):
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="API route not found.")
+
+        dist_root = DIST_DIR.resolve()
+        requested_path = (dist_root / full_path).resolve()
+        is_inside_dist = requested_path == dist_root or dist_root in requested_path.parents
+        if is_inside_dist and requested_path.is_file():
+            return FileResponse(requested_path)
+
+        return FileResponse(dist_root / "index.html")
 else:
     logger.warning(
         f"Production frontend directory '{DIST_DIR}' not found. "
