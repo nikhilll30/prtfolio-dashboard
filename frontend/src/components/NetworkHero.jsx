@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { capabilities, projectsData } from '../data/projects';
 import useNetworkCanvas from '../hooks/useNetworkCanvas';
+import DitheringShader from './ui/dithering-shader';
 
 const projectNodeId = (projectId) => `project-${projectId}`;
 const capabilityNodeId = (capabilityId) => `capability-${capabilityId}`;
@@ -125,6 +126,15 @@ export default function NetworkHero({ activeCapability, onCapabilityChange, onOp
           <div className="network-grid" aria-hidden="true" />
 
           <div className="network-center" ref={nodeRefs.get('center')}>
+            <DitheringShader
+              className="network-center__shader"
+              colorBack="#0a0c0d"
+              colorFront="#ff6339"
+              shape="sphere"
+              type="random"
+              pxSize={2}
+              speed={1.5}
+            />
             <span className="network-center__orbit" aria-hidden="true" />
             <strong>NT</strong>
             <small>applied AI<br />systems</small>

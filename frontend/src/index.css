@@ -487,19 +487,47 @@ a {
   place-items: center;
   border: 1px solid rgba(255, 99, 57, 0.6);
   border-radius: 50%;
-  background: var(--ink);
+  background: rgba(10, 12, 13, 0.92);
   box-shadow: 0 0 56px rgba(255, 99, 57, 0.13);
   text-align: center;
 }
 
+.network-center::after {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(10, 12, 13, 0.08) 0 32%, rgba(10, 12, 13, 0.5) 78%);
+  content: '';
+  pointer-events: none;
+}
+
+.network-center__shader {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0.92;
+}
+
+.network-center__shader canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .network-center__orbit {
   position: absolute;
+  z-index: 3;
   inset: -0.65rem;
   border: 1px dashed rgba(255, 99, 57, 0.28);
   border-radius: 50%;
 }
 
 .network-center strong {
+  position: relative;
+  z-index: 2;
   align-self: end;
   color: var(--bone);
   font-size: 1.55rem;
@@ -508,6 +536,8 @@ a {
 }
 
 .network-center small {
+  position: relative;
+  z-index: 2;
   align-self: start;
   color: var(--muted);
   font-family: var(--font-mono);
@@ -2138,6 +2168,12 @@ a {
     left: auto;
     width: 100%;
     transform: none;
+  }
+
+  .network-center {
+    width: 7.4rem;
+    grid-column: 1 / -1;
+    justify-self: center;
   }
 
   .network-center {
