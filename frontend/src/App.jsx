@@ -6,7 +6,10 @@ import ProjectPage from './pages/ProjectPage';
 import RecruiterChat from './components/RecruiterChat';
 import SiteFooter from './components/SiteFooter';
 import SiteHeader from './components/SiteHeader';
+import Auralis from './components/ui/auralis';
 import { projectsById } from './data/projects';
+
+const atmosphereColors = ['#ff6339', '#62d9e8', '#c7f36b'];
 
 function ScrollManager() {
   const location = useLocation();
@@ -58,7 +61,15 @@ export default function App() {
   return (
     <div className="site-shell">
       <a className="skip-link" href="#main-content">Skip to content</a>
-      <div className="site-atmosphere" aria-hidden="true"><span /><span /></div>
+      <div className="site-atmosphere" aria-hidden="true">
+        <Auralis
+          className="site-atmosphere__auralis"
+          colors={atmosphereColors}
+          speed={0.24}
+          grain={0.22}
+        />
+        <div className="site-atmosphere__grid" />
+      </div>
       <SiteHeader onOpenAgent={openAgent} />
       <div id="main-content">
         <ScrollManager />

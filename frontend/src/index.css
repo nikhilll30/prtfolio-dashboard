@@ -127,31 +127,42 @@ a {
   z-index: -1;
   overflow: hidden;
   pointer-events: none;
+  background: var(--ink);
+}
+
+.site-atmosphere::after {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 20%, transparent 0 18%, rgba(10, 12, 13, 0.2) 58%, rgba(10, 12, 13, 0.74) 100%),
+    linear-gradient(180deg, rgba(10, 12, 13, 0.06), rgba(10, 12, 13, 0.42));
+  content: '';
+}
+
+.site-atmosphere__auralis {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0.48;
+  filter: saturate(0.88) contrast(1.08);
+}
+
+.auralis__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.site-atmosphere__grid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
   background:
     linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
   background-size: 68px 68px;
-}
-
-.site-atmosphere span {
-  position: absolute;
-  width: 42rem;
-  height: 42rem;
-  border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.09;
-}
-
-.site-atmosphere span:first-child {
-  top: -22rem;
-  right: -18rem;
-  background: var(--signal);
-}
-
-.site-atmosphere span:last-child {
-  bottom: -28rem;
-  left: -18rem;
-  background: #62d9e8;
 }
 
 .eyebrow {
